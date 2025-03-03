@@ -1,0 +1,93 @@
+version: 2
+
+models:
+  - name:   stg_client_user   #Nome do modelo
+    description:  "Tabela de informações do cliente"  #Informação da tabela
+    meta:
+        owner: postgres_boatcamp    #Propetário do modelo
+        type: view    #Tipo do modelo (tabela ou view)
+        package: northwind_dbt    #Pacote no qual o modelo pertence
+        language: sql   #Linguagem usada para definir o modelo
+        relation: postgres.public.raw_crm_client_user   #Relações com outras tabelas no banco de dados
+        version: 1.0  #Versão do modelo
+        contract: Enforced  #Especifica que o contrato de schema é aplicado
+    columns:
+          - name: id_client   #Nome da coluna
+            description: "Informação do ID Índividual do Cliente"   #Descrição da coluna
+            tests:
+              - not_null  #Teste para garantir que a coluna não tenha valores nulos.
+              - unique    #Teste que garanta que a coluna não tenha valores únicos.
+          - name: name
+            description: "Coluna de informações do nome dos clientes"
+            tests:
+              - not_null
+          - name: email   #Nome da coluna
+            description: "Informação do email do cliente"   #Descrição da coluna
+            tests:
+              - not_null  #Garantir que a coluna não contém valores nulos.
+              - unique    #Garantir que não tenha nenhum email repetido, ou dados duplicados.
+          - name: number  #Nome da coluna
+            description: "Coluna com informação do número de celular do cliente"  #Descrição da coluna
+            tests:
+              - not_null  #Teste para garantir que não tenha valores nulos na coluna.
+              - unique    #Teste para garantir que não tenha números iguais, ou valores duplicados.
+          - name: number_cpf  #Nome da coluna
+            description: "Coluna que informa o CPF de cada cliente"
+            tests:
+              - not_null  #Teste para garantir que não tenha valores nulos.
+              - unique    #Teste para garantir que não tenha CPFs repetidos ou iguais.
+          - name: country_sigle   #Nome da coluna
+            description: "Coluna de informação do país do cliente"  #Descrição da coluna
+            tests:
+              - not_null  #Teste para garantir que não tenha valores nulos.
+          - name: create_account_date #Nome da coluna
+            description: "Coluna com informação da data que o cliente criou a conta" #Descrição da coluna
+            tests:
+              - not_null  #Teste para garantir que não tenha valores nulos.
+
+
+  - name: stg_card_user   #Nome da tabela
+    description: "Tabela de informações dos cartões de cada cliente"  #Descrição da tabela
+    meta:
+        owner: postgres_boatcamp    #Propetário do modelo
+        type: view    #Tipo do modelo (tabela ou view)
+        package: northwind_dbt    #Pacote no qual o modelo pertence
+        language: sql   #Linguagem usada para definir o modelo
+        relation: postgres.public.raw_crm_card_user   #Relações com outras tabelas no banco de dados
+        version: 1.0  #Versão do modelo
+        contract: Enforced  # Especifica que o contrato de schema é aplicado
+    columns:
+          - name: id_card   #Nome da coluna
+            description: "Coluna de informação do ID índividual do cartão do cliente" #Descrição da coluna
+            tests:
+              - not_null  #Teste para garantir que não tenha valores únicos.
+              - unique  #Teste para garantir que a coluna tenha ID's índividuais e únicos.
+          - name: name  #Nome da coluna
+            description: "Coluna de informação do nome do propretário do cartão"  #Descrição da coluna
+            tests:
+              - not_null   #Teste para garantir que não tenha valores únicos.
+          - name: number_cpf  #Nome da coluna
+            description: "Coluna que nos mostra o CPF do propretário do cartão"  #Descrição da coluna
+            tests:
+              - not_null   #Teste para garantir que não tenha valores únicos.
+              - unique  #Teste para garantir que a coluna tenha CPFs índividuais e únicos.
+          - name:  customer_id #Nome da coluna
+            description:  "Coluna que nos informa o ID índividual de cada cliente da tabela client_user" #Descrição da coluna
+            tests:
+              - not_null   #Teste para garantir que não tenha valores únicos.
+              - unique  #Teste para garantir que a coluna tenha ID's índividuais e únicos.
+              - relationships:    #Teste para garantir que os valores sejam os mesmos da coluna id_client da tabela client_user (Chave Primária e Chave Estrangeira).
+                   to: ref('stg_client_user')   #Tabela referencial.
+                   field: id_client   #Coluna que deve conter os valores.
+          - name: limite  #Nome da coluna
+            description: "Limite do cartão do cliente"  #Descrição da coluna
+            tests:
+              - not_null   #Teste para garantir que não tenha valores únicos.
+          - name: expiration_date  #Nome da coluna
+            description: "Data de expiração do cartão do cliente"  #Descrição da coluna
+            tests:
+              - not_null   #Teste para garantir que não tenha valores únicos.
+          - name: negative_value  #Nome da coluna
+            description: "Coluna de informação de quanto o cliente deve a empresa"  #Descrição da coluna
+            tests:
+              - not_null   #Teste para garantir que não tenha valores únicos.

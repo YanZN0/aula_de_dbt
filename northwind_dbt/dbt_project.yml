@@ -17,6 +17,7 @@ test-paths: ["tests"]
 seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
+docs-paths: ["docs"]  # Adicione esta linha
 
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
@@ -29,16 +30,19 @@ clean-targets:         # directories to be removed by `dbt clean`
 # In this example config, we tell dbt to build all models in the example/
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
+# Config indicated by + and applies to all files under models/example/
 models:
   northwind_dbt:
-    # Config indicated by + and applies to all files under models/example/
     raw:
-      +materialized: view
+      materialized: view
+      +docs:
+        node_color: "#cd7f32"  # Cor bronze para a camada raw
     staging:
-      +materialized: view
-    intermediate:
-      +materialized: view
-    marts:
-      +materialized: table
-      +schema: "gold"
-      +materialized: table
+      materialized: view
+      +docs:
+        node_color: "#c0c0c0"  # Cor prata para a camada staging
+    reports:
+      +schema: "gold"  # Define o schema "gold" para as tabelas report_
+      materialized: table
+      +docs:
+        node_color: "#e6b530"  # Cor ouro para a camada reports
